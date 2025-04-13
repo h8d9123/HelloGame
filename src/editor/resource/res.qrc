@@ -1,0 +1,7 @@
+<RCC>
+  <qresource>
+    <file>pic/icon/save_project.png</file>
+    <file>pic/icon/open_project.png</file>
+    <file>pic/icon/new_project.png</file>
+  </qresource>
+</RCC>
