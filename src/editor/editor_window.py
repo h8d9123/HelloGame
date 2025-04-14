@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QMdiArea, QTabWidget
 from game_loop import GameLoop
 import threading
 from PySide6.QtUiTools import QUiLoader
@@ -25,16 +25,24 @@ class EditorWindow(QMainWindow):
         self.setCentralWidget(self.ui)
         self.setWindowTitle("HelloGame")
         self.setGeometry(100, 100, 800, 600)
-        for action in g_tool_bar_actions:
-            button_action = QAction(self)
-            button_action.setIcon(QIcon(g_tool_bar_actions[action]["icon"]))
-            button_action.setStatusTip(g_tool_bar_actions[action]["status_tip"])
-            #button_action1.triggered.connect(self.toolbar_button_clicked)
-            self.ui.toolBar.addAction(button_action)
-
+        self.init_toolbar()
+        self.init_mdi()
         self.game_thread = None
 
     def start_game(self):
         if self.game_thread is None or not self.game_thread.is_alive():
             self.game_thread = threading.Thread(target=GameLoop().run, daemon=True)
             self.game_thread.start()
+    def init_toolbar(self):
+        for action in g_tool_bar_actions:
+            button_action = QAction(self)
+            button_action.setIcon(QIcon(g_tool_bar_actions[action]["icon"]))
+            button_action.setStatusTip(g_tool_bar_actions[action]["status_tip"])
+            #button_action1.triggered.connect(self.toolbar_button_clicked)
+            self.ui.toolBar.addAction(button_action)
+    def init_mdi(self):
+        self.mdi_area = QMdiArea()
+        self.ui.centralwidget.layout().addWidget(self.mdi_area, stretch=4)
+        self.bottom_area = QTabWidget()
+        self.ui.centralwidget.layout().addWidget(self.bottom_area, stretch=1)
+
