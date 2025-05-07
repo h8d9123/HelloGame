@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QMdiArea, QTabWidget
+from PySide6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QMdiArea, QTabWidget,QDialog
 from game_loop import GameLoop
 import threading
 from PySide6.QtUiTools import QUiLoader
@@ -11,6 +11,7 @@ from editor.search_result import SearchResultWindow
 from editor.break_porint import BreakPointWindow
 from editor.compile_result import CompileResultWindow
 from editor.workspace import Workspace
+from render.pygame_widget import GameDialog
 g_tool_bar_actions = {
     "new_project": {"icon":":/pic/icon/new_project.png", "status_tip":"Create a new project"},
     "open_project": {"icon":":/pic/icon/open_project.png", "status_tip":"Open a project"},
@@ -30,6 +31,7 @@ class EditorWindow(QMainWindow):
         self.setWindowTitle("HelloGame")
         self.setGeometry(100, 100, 800, 600)
         self.init_toolbar()
+        self.init_menu()
 
         # 添加MDI区域和底部区域
         self.mdi_area = QMdiArea()
@@ -47,6 +49,7 @@ class EditorWindow(QMainWindow):
         self.add_workspace("workspace1")
         self.add_workspace("workspace2")
         self.add_workspace("workspace3")
+        self.showMaximized()
 
     def start_game(self):
         if self.game_thread is None or not self.game_thread.is_alive():
@@ -65,6 +68,7 @@ class EditorWindow(QMainWindow):
         self.mdi_area.addSubWindow(workspace)
         workspace.show()
         self.output_window.append_log(f"add workspace {name}", "info")
+
     def init_bottom(self):
         
         self.output_window = OutputWindow()
@@ -76,3 +80,12 @@ class EditorWindow(QMainWindow):
         self.compile_result_window = CompileResultWindow()
         self.bottom_area.addTab(self.compile_result_window, "Compile Result")
 
+    def init_menu(self):
+        self.ui.actionRun.triggered.connect(self.run_game)
+
+    def run_game(self):
+        dlg = GameDialog()
+        dlg.resize(800,600)
+        dlg.setModal(True)
+        dlg.exec()
+        pass
